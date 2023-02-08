@@ -20,13 +20,6 @@ func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			template.Must(template.ParseFiles(filepath.Join("templates", t.filename)))
 	})
 
-	if name := r.FormValue("name"); name != "" {
-		log.Printf("Name: %s", r.FormValue("name"))
-	}
-	if compliment := r.FormValue("compliment"); compliment != "" {
-		log.Printf("Compliment: %s", r.FormValue("compliment"))
-	}
-
 	t.templ.Execute(w, r)
 }
 
