@@ -59,7 +59,7 @@ func (q *Queries) GetMovieRatings(ctx context.Context, movieID sql.NullInt32) ([
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Rating
+	items := []Rating{}
 	for rows.Next() {
 		var i Rating
 		if err := rows.Scan(
@@ -82,17 +82,19 @@ func (q *Queries) GetMovieRatings(ctx context.Context, movieID sql.NullInt32) ([
 }
 
 const getRating = `-- name: GetRating :one
-SELECT FROM ratings
+SELECT id, score, movie_id, user_id FROM ratings
 WHERE id = $1 LIMIT 1
 `
 
-type GetRatingRow struct {
-}
-
-func (q *Queries) GetRating(ctx context.Context, id int64) (GetRatingRow, error) {
+func (q *Queries) GetRating(ctx context.Context, id int64) (Rating, error) {
 	row := q.db.QueryRowContext(ctx, getRating, id)
-	var i GetRatingRow
-	err := row.Scan()
+	var i Rating
+	err := row.Scan(
+		&i.ID,
+		&i.Score,
+		&i.MovieID,
+		&i.UserID,
+	)
 	return i, err
 }
 
@@ -107,7 +109,7 @@ func (q *Queries) GetUserRatings(ctx context.Context, userID sql.NullInt32) ([]R
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Rating
+	items := []Rating{}
 	for rows.Next() {
 		var i Rating
 		if err := rows.Scan(

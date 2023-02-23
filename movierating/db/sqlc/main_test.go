@@ -14,7 +14,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-var testDB *Queries
+var testQueries *Queries
 
 const (
 	dbDriver = "postgres"
@@ -24,7 +24,7 @@ const (
 func TestMain(m *testing.M) {
 	cmd := exec.Command("dropdb", "--if-exists", "test_ratings")
 	if err := cmd.Run(); err != nil {
-		fmt.Println("Failed to drop")
+		fmt.Println("failed to drop")
 		log.Fatal(err)
 	}
 
@@ -48,7 +48,7 @@ func TestMain(m *testing.M) {
 		log.Fatal("cannot connect to db:", err)
 	}
 
-	testDB = New(connect)
+	testQueries = New(connect)
 
 	os.Exit(m.Run())
 

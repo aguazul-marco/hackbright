@@ -8,7 +8,7 @@ INSERT INTO ratings (
 ) RETURNING *;
 
 -- name: GetRating :one
-SELECT FROM ratings
+SELECT * FROM ratings
 WHERE id = $1 LIMIT 1;
 
 -- name: GetMovieRatings :many

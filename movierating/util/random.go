@@ -1,6 +1,7 @@
 package util
 
 import (
+	"fmt"
 	"math/rand"
 	"strings"
 	"time"
@@ -39,3 +40,22 @@ func RandomUser() string {
 func RandomRating() int32 {
 	return int32(RandomInt(1, 5))
 }
+
+// RandomEmail generates a random email
+func RandomEmail() string {
+	return fmt.Sprintf(RandomString(24) + "@email.com")
+}
+
+func RandomURL() string {
+	return fmt.Sprintf("www.randomurl.com//" + RandomString(24))
+}
+
+// func randate() time.Time {
+// 	min := time.Date(1970, 1, 0, 0, 0, 0, 0, time.UTC).Unix()
+// 	max := time.Date(2070, 1, 0, 0, 0, 0, 0, time.UTC).Unix()
+// 	delta := max - min
+
+// 	sec := rand.Int63n(delta) + min
+
+// 	return time.Unix(sec, 0)
+// }

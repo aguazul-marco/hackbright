@@ -91,7 +91,7 @@ func (q *Queries) GetMovies(ctx context.Context, arg GetMoviesParams) ([]Movie, 
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Movie
+	items := []Movie{}
 	for rows.Next() {
 		var i Movie
 		if err := rows.Scan(
