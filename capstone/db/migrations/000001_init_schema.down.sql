@@ -1,0 +1,4 @@
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS daily_goals;
+DROP TABLE IF EXISTS weekly_goals;
+DROP TABLE IF EXISTS monthly_goals;
