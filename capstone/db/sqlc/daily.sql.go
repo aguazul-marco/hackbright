@@ -13,9 +13,10 @@ import (
 const createDailyGoal = `-- name: CreateDailyGoal :one
 INSERT INTO daily_goals (
   discription,
-  user_id
+  user_id,
+  completed
 ) VALUES (
-  $1, $2
+  $1, $2, false
 ) RETURNING id, discription, completed, user_id, created_at
 `
 
@@ -132,22 +133,24 @@ func (q *Queries) DailyUncompletedGoals(ctx context.Context, userID sql.NullInt3
 	return items, nil
 }
 
-const dailyUserGoals = `-- name: DailyUserGoals :many
+const deleteDailyGoal = `-- name: DeleteDailyGoal :exec
+DELETE FROM daily_goals
+WHERE id = $1
+`
+
+func (q *Queries) DeleteDailyGoal(ctx context.Context, id int64) error {
+	_, err := q.db.ExecContext(ctx, deleteDailyGoal, id)
+	return err
+}
+
+const userDailyGoals = `-- name: UserDailyGoals :many
 SELECT id, discription, completed, user_id, created_at FROM daily_goals
 WHERE user_id = $1
 ORDER BY created_at
-LIMIT $2
-OFFSET $3
 `
 
-type DailyUserGoalsParams struct {
-	UserID sql.NullInt32 `json:"user_id"`
-	Limit  int32         `json:"limit"`
-	Offset int32         `json:"offset"`
-}
-
-func (q *Queries) DailyUserGoals(ctx context.Context, arg DailyUserGoalsParams) ([]DailyGoal, error) {
-	rows, err := q.db.QueryContext(ctx, dailyUserGoals, arg.UserID, arg.Limit, arg.Offset)
+func (q *Queries) UserDailyGoals(ctx context.Context, userID sql.NullInt32) ([]DailyGoal, error) {
+	rows, err := q.db.QueryContext(ctx, userDailyGoals, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -173,32 +176,4 @@ func (q *Queries) DailyUserGoals(ctx context.Context, arg DailyUserGoalsParams) 
 		return nil, err
 	}
 	return items, nil
-}
-
-const deleteDailyGoal = `-- name: DeleteDailyGoal :exec
-DELETE FROM daily_goals
-WHERE id = $1
-`
-
-func (q *Queries) DeleteDailyGoal(ctx context.Context, id int64) error {
-	_, err := q.db.ExecContext(ctx, deleteDailyGoal, id)
-	return err
-}
-
-const getUserDailyGoal = `-- name: GetUserDailyGoal :one
-SELECT id, discription, completed, user_id, created_at FROM daily_goals
-WHERE user_id = $1 LIMIT 1
-`
-
-func (q *Queries) GetUserDailyGoal(ctx context.Context, userID sql.NullInt32) (DailyGoal, error) {
-	row := q.db.QueryRowContext(ctx, getUserDailyGoal, userID)
-	var i DailyGoal
-	err := row.Scan(
-		&i.ID,
-		&i.Discription,
-		&i.Completed,
-		&i.UserID,
-		&i.CreatedAt,
-	)
-	return i, err
 }

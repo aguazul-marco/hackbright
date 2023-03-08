@@ -17,24 +17,21 @@ type Querier interface {
 	DailyCompleteStatusUpdate(ctx context.Context, arg DailyCompleteStatusUpdateParams) (DailyGoal, error)
 	DailyCompletedGoals(ctx context.Context, userID sql.NullInt32) ([]DailyGoal, error)
 	DailyUncompletedGoals(ctx context.Context, userID sql.NullInt32) ([]DailyGoal, error)
-	DailyUserGoals(ctx context.Context, arg DailyUserGoalsParams) ([]DailyGoal, error)
 	DeleteDailyGoal(ctx context.Context, id int64) error
 	DeleteMonthlyGoal(ctx context.Context, id int64) error
 	DeleteUser(ctx context.Context, id int64) error
 	DeleteWeeklyGoal(ctx context.Context, id int64) error
 	GetUser(ctx context.Context, id int64) (User, error)
-	GetUserDailyGoal(ctx context.Context, userID sql.NullInt32) (DailyGoal, error)
-	GetUserMonthlyGoal(ctx context.Context, userID sql.NullInt32) (MonthlyGoal, error)
-	GetUserWeeklyGoal(ctx context.Context, userID sql.NullInt32) (WeeklyGoal, error)
 	MonthlyCompleteStatusUpdate(ctx context.Context, arg MonthlyCompleteStatusUpdateParams) (MonthlyGoal, error)
-	MonthlyUserGoals(ctx context.Context, arg MonthlyUserGoalsParams) ([]MonthlyGoal, error)
 	UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error)
+	UserDailyGoals(ctx context.Context, userID sql.NullInt32) ([]DailyGoal, error)
 	UserMonthlyCompletedGoals(ctx context.Context, userID sql.NullInt32) ([]MonthlyGoal, error)
+	UserMonthlyGoals(ctx context.Context, userID sql.NullInt32) ([]MonthlyGoal, error)
 	UserMonthlyUncompletedGoals(ctx context.Context, userID sql.NullInt32) ([]MonthlyGoal, error)
+	UserWeeklyGoals(ctx context.Context, userID sql.NullInt32) ([]WeeklyGoal, error)
 	WeeklyCompleteStatusUpdate(ctx context.Context, arg WeeklyCompleteStatusUpdateParams) (WeeklyGoal, error)
 	WeeklyCompletedGoals(ctx context.Context, userID sql.NullInt32) ([]WeeklyGoal, error)
 	WeeklyUncompletedGoals(ctx context.Context, userID sql.NullInt32) ([]WeeklyGoal, error)
-	WeeklyUserGoals(ctx context.Context, arg WeeklyUserGoalsParams) ([]WeeklyGoal, error)
 }
 
 var _ Querier = (*Queries)(nil)

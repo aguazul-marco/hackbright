@@ -1,14 +1,11 @@
 -- name: CreateWeeklyGoal :one
 INSERT INTO weekly_goals (
   discription,
-  user_id
+  user_id,
+  completed
 ) VALUES (
-  $1, $2
+  $1, $2, false
 ) RETURNING *;
-
--- name: GetUserWeeklyGoal :one
-SELECT * FROM weekly_goals
-WHERE user_id = $1 LIMIT 1;
 
 -- name: DeleteWeeklyGoal :exec
 DELETE FROM weekly_goals
@@ -20,12 +17,10 @@ SET completed = $2
 WHERE id = $1
 RETURNING *;
 
--- name: WeeklyUserGoals :many
+-- name: UserWeeklyGoals :many
 SELECT * FROM weekly_goals
 WHERE user_id = $1
-ORDER BY created_at
-LIMIT $2
-OFFSET $3;
+ORDER BY created_at;
 
 -- name: WeeklyCompletedGoals :many
 SELECT * FROM weekly_goals

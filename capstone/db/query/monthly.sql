@@ -1,14 +1,11 @@
 -- name: CreateMonthlyGoal :one
 INSERT INTO monthly_goals (
   discription,
-  user_id
+  user_id,
+  completed
 ) VALUES (
-  $1, $2
+  $1, $2, false
 ) RETURNING *;
-
--- name: GetUserMonthlyGoal :one
-SELECT * FROM monthly_goals
-WHERE user_id = $1 LIMIT 1;
 
 -- name: DeleteMonthlyGoal :exec
 DELETE FROM monthly_goals
@@ -20,12 +17,10 @@ SET completed = $2
 WHERE id = $1
 RETURNING *;
 
--- name: MonthlyUserGoals :many
+-- name: UserMonthlyGoals :many
 SELECT * FROM monthly_goals
 WHERE user_id = $1
-ORDER BY created_at
-LIMIT $2
-OFFSET $3;
+ORDER BY created_at;
 
 -- name: UserMonthlyCompletedGoals :many
 SELECT * FROM monthly_goals

@@ -13,9 +13,10 @@ import (
 const createWeeklyGoal = `-- name: CreateWeeklyGoal :one
 INSERT INTO weekly_goals (
   discription,
-  user_id
+  user_id,
+  completed
 ) VALUES (
-  $1, $2
+  $1, $2, false
 ) RETURNING id, discription, completed, user_id, created_at
 `
 
@@ -47,22 +48,39 @@ func (q *Queries) DeleteWeeklyGoal(ctx context.Context, id int64) error {
 	return err
 }
 
-const getUserWeeklyGoal = `-- name: GetUserWeeklyGoal :one
+const userWeeklyGoals = `-- name: UserWeeklyGoals :many
 SELECT id, discription, completed, user_id, created_at FROM weekly_goals
-WHERE user_id = $1 LIMIT 1
+WHERE user_id = $1
+ORDER BY created_at
 `
 
-func (q *Queries) GetUserWeeklyGoal(ctx context.Context, userID sql.NullInt32) (WeeklyGoal, error) {
-	row := q.db.QueryRowContext(ctx, getUserWeeklyGoal, userID)
-	var i WeeklyGoal
-	err := row.Scan(
-		&i.ID,
-		&i.Discription,
-		&i.Completed,
-		&i.UserID,
-		&i.CreatedAt,
-	)
-	return i, err
+func (q *Queries) UserWeeklyGoals(ctx context.Context, userID sql.NullInt32) ([]WeeklyGoal, error) {
+	rows, err := q.db.QueryContext(ctx, userWeeklyGoals, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []WeeklyGoal{}
+	for rows.Next() {
+		var i WeeklyGoal
+		if err := rows.Scan(
+			&i.ID,
+			&i.Discription,
+			&i.Completed,
+			&i.UserID,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const weeklyCompleteStatusUpdate = `-- name: WeeklyCompleteStatusUpdate :one
@@ -133,49 +151,6 @@ ORDER BY created_at
 
 func (q *Queries) WeeklyUncompletedGoals(ctx context.Context, userID sql.NullInt32) ([]WeeklyGoal, error) {
 	rows, err := q.db.QueryContext(ctx, weeklyUncompletedGoals, userID)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	items := []WeeklyGoal{}
-	for rows.Next() {
-		var i WeeklyGoal
-		if err := rows.Scan(
-			&i.ID,
-			&i.Discription,
-			&i.Completed,
-			&i.UserID,
-			&i.CreatedAt,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const weeklyUserGoals = `-- name: WeeklyUserGoals :many
-SELECT id, discription, completed, user_id, created_at FROM weekly_goals
-WHERE user_id = $1
-ORDER BY created_at
-LIMIT $2
-OFFSET $3
-`
-
-type WeeklyUserGoalsParams struct {
-	UserID sql.NullInt32 `json:"user_id"`
-	Limit  int32         `json:"limit"`
-	Offset int32         `json:"offset"`
-}
-
-func (q *Queries) WeeklyUserGoals(ctx context.Context, arg WeeklyUserGoalsParams) ([]WeeklyGoal, error) {
-	rows, err := q.db.QueryContext(ctx, weeklyUserGoals, arg.UserID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

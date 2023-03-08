@@ -13,9 +13,10 @@ import (
 const createMonthlyGoal = `-- name: CreateMonthlyGoal :one
 INSERT INTO monthly_goals (
   discription,
-  user_id
+  user_id,
+  completed
 ) VALUES (
-  $1, $2
+  $1, $2, false
 ) RETURNING id, discription, completed, user_id, created_at
 `
 
@@ -47,24 +48,6 @@ func (q *Queries) DeleteMonthlyGoal(ctx context.Context, id int64) error {
 	return err
 }
 
-const getUserMonthlyGoal = `-- name: GetUserMonthlyGoal :one
-SELECT id, discription, completed, user_id, created_at FROM monthly_goals
-WHERE user_id = $1 LIMIT 1
-`
-
-func (q *Queries) GetUserMonthlyGoal(ctx context.Context, userID sql.NullInt32) (MonthlyGoal, error) {
-	row := q.db.QueryRowContext(ctx, getUserMonthlyGoal, userID)
-	var i MonthlyGoal
-	err := row.Scan(
-		&i.ID,
-		&i.Discription,
-		&i.Completed,
-		&i.UserID,
-		&i.CreatedAt,
-	)
-	return i, err
-}
-
 const monthlyCompleteStatusUpdate = `-- name: MonthlyCompleteStatusUpdate :one
 UPDATE monthly_goals
 SET completed = $2
@@ -90,22 +73,14 @@ func (q *Queries) MonthlyCompleteStatusUpdate(ctx context.Context, arg MonthlyCo
 	return i, err
 }
 
-const monthlyUserGoals = `-- name: MonthlyUserGoals :many
+const userMonthlyCompletedGoals = `-- name: UserMonthlyCompletedGoals :many
 SELECT id, discription, completed, user_id, created_at FROM monthly_goals
-WHERE user_id = $1
+WHERE user_id = $1 AND completed = true
 ORDER BY created_at
-LIMIT $2
-OFFSET $3
 `
 
-type MonthlyUserGoalsParams struct {
-	UserID sql.NullInt32 `json:"user_id"`
-	Limit  int32         `json:"limit"`
-	Offset int32         `json:"offset"`
-}
-
-func (q *Queries) MonthlyUserGoals(ctx context.Context, arg MonthlyUserGoalsParams) ([]MonthlyGoal, error) {
-	rows, err := q.db.QueryContext(ctx, monthlyUserGoals, arg.UserID, arg.Limit, arg.Offset)
+func (q *Queries) UserMonthlyCompletedGoals(ctx context.Context, userID sql.NullInt32) ([]MonthlyGoal, error) {
+	rows, err := q.db.QueryContext(ctx, userMonthlyCompletedGoals, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -133,14 +108,14 @@ func (q *Queries) MonthlyUserGoals(ctx context.Context, arg MonthlyUserGoalsPara
 	return items, nil
 }
 
-const userMonthlyCompletedGoals = `-- name: UserMonthlyCompletedGoals :many
+const userMonthlyGoals = `-- name: UserMonthlyGoals :many
 SELECT id, discription, completed, user_id, created_at FROM monthly_goals
-WHERE user_id = $1 AND completed = true
+WHERE user_id = $1
 ORDER BY created_at
 `
 
-func (q *Queries) UserMonthlyCompletedGoals(ctx context.Context, userID sql.NullInt32) ([]MonthlyGoal, error) {
-	rows, err := q.db.QueryContext(ctx, userMonthlyCompletedGoals, userID)
+func (q *Queries) UserMonthlyGoals(ctx context.Context, userID sql.NullInt32) ([]MonthlyGoal, error) {
+	rows, err := q.db.QueryContext(ctx, userMonthlyGoals, userID)
 	if err != nil {
 		return nil, err
 	}
