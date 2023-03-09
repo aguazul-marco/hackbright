@@ -15,14 +15,22 @@ const (
 	dbSource = "postgresql:///goal_tracker?sslmode=disable"
 )
 
+var q *db.Queries
+
 func SetUpRouter() *gin.Engine {
 	dbInit()
 	r := gin.Default()
 
-	r.POST("/users", createUser)
-	r.GET("/users/:id", getUser)
-	r.DELETE("/users/:id", deleteUser)
-	r.PUT("/users/:id", updateUser)
+	r.POST("/user", createUser)
+	r.POST("/user/:id/dailygoal", createGoal)
+	r.GET("/user/:id", getUser)
+	r.GET("/user/:id/dailygoals", getAllDailyGoals)
+	r.GET("/user/:id/dailygoals/completed", getCompleteGoals)
+	r.GET("/user/:id/dailygoals/uncompleted", getUnCompleteGoals)
+	r.DELETE("user/:id/dailygoal/:goal_id", deleteGoal)
+	r.DELETE("/user/:id", deleteUser)
+	r.PUT("/user/:id", updateUser)
+	r.PUT("/user/:id/dailygoal/:goal_id", updateGoalStatus)
 
 	return r
 }
