@@ -24,8 +24,6 @@ type UpdateUserRequest struct {
 	LastName  string `json:"last_name" binding:"required"`
 }
 
-var q *db.Queries
-
 func createUser(ctx *gin.Context) {
 	var req createUserRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -83,7 +81,6 @@ func deleteUser(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errResponse(err))
 		return
 	}
-
 	ctx.Status(http.StatusOK)
 }
 
