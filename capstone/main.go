@@ -14,5 +14,4 @@ func main() {
 	r := api.SetUpRouter()
 
 	r.Run(port)
-
 }
