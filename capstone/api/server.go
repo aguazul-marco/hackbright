@@ -21,16 +21,34 @@ func SetUpRouter() *gin.Engine {
 	dbInit()
 	r := gin.Default()
 
-	r.POST("/user", createUser)
-	r.POST("/user/:id/dailygoal", createGoal)
+	r.POST("/user/", createUser)
 	r.GET("/user/:id", getUser)
-	r.GET("/user/:id/dailygoals", getAllDailyGoals)
-	r.GET("/user/:id/dailygoals/completed", getCompleteGoals)
-	r.GET("/user/:id/dailygoals/uncompleted", getUnCompleteGoals)
-	r.DELETE("user/:id/dailygoal/:goal_id", deleteGoal)
-	r.DELETE("/user/:id", deleteUser)
 	r.PUT("/user/:id", updateUser)
-	r.PUT("/user/:id/dailygoal/:goal_id", updateGoalStatus)
+	r.DELETE("/user/:id", deleteUser)
+
+	//daily goals endpoints
+	r.POST("/user/:id/dailygoal", createDailyGoal)
+	r.GET("/user/:id/dailygoals", getAllDailyGoals)
+	r.GET("/user/:id/dailygoals/completed", getDailyCompletedGoals)
+	r.GET("/user/:id/dailygoals/uncompleted", getDailyUncompletedGoals)
+	r.PUT("/user/:id/dailygoal/:goal_id", updateDailyGoalStatus)
+	r.DELETE("user/:id/dailygoal/:goal_id", deleteDailyGoal)
+
+	//monthly goals endpoints
+	r.POST("/user/:id/monthlygoal", createMonthlyGoal)
+	r.GET("/user/:id/monthlygoals", getAllMonthlyGoals)
+	r.GET("/user/:id/monthlygoals/completed", getMonthlyCompletedGoals)
+	r.GET("/user/:id/monthlygoals/uncompleted", getMonthlyUncompletedGoals)
+	r.PUT("/user/:id/monthlygoal/:goal_id", updateMonthlyGoalStatus)
+	r.DELETE("user/:id/monthlygoal/:goal_id", deleteMonthlyGoal)
+
+	//weekly goals endpoints
+	r.POST("/user/:id/weeklygoal", createWeeklyGoal)
+	r.GET("/user/:id/weeklygoals", getAllWeeklyGoals)
+	r.GET("/user/:id/weeklygoals/completed", getWeeklyCompletedGoals)
+	r.GET("/user/:id/weeklygoals/uncompleted", getWeeklyUncompletedGoals)
+	r.PUT("/user/:id/weeklygoal/:goal_id", updateWeeklyGoalStatus)
+	r.DELETE("user/:id/weeklygoal/:goal_id", deleteWeeklyGoal)
 
 	return r
 }
