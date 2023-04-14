@@ -14,7 +14,7 @@ var rootCmd = &cobra.Command{
 	Example: "goals `firstname` `lastname`",
 	Short:   "a simple CLI to help keep track a users daily, weekly, and even monthly goals",
 	Args:    cobra.RangeArgs(0, 2),
-	Long: ` Begin by creating a user account. Then with the user_ID and subcommands the users are able to create, 
+	Long: ` "goals" is a simple CLI to help keep track a users daily, weekly, and even monthly goals. Begin by creating a user account. Then with the user_ID and subcommands the users are able to create, 
 	delete and update their goals. Flags will assist with retrieving complete and incomplete goals.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		client := client.NewClient()

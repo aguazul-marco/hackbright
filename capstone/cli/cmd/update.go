@@ -11,8 +11,9 @@ import (
 var UpdateCmd = &cobra.Command{
 	Use:     "update",
 	Aliases: []string{"update", "u"},
-	Short: `update goal status, "true" if it's complete or "false" if it's incomplete. Default is false. 
-If no flag is use the default is daily goal. Use the -h for help when needed.`,
+	Short:   `update goal status, "true" if it's complete or "false"`,
+	Long: `update goal status, "true" if it's complete or "false" if it's incomplete. Default is false. 
+	If no flag is use the default is daily goal. Use the -h for help when needed.`,
 	Example: "update [flag] <user_id> <goal_id> true",
 	Run: func(cmd *cobra.Command, args []string) {
 

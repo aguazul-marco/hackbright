@@ -13,8 +13,8 @@ var IncompleteFlag bool
 var RetrieveCmd = &cobra.Command{
 	Use:     "get",
 	Aliases: []string{"get", "g"},
-	Short: `get a list of all goals. Use the flags to specific the type of goal, as well as incomplete and complete goals. 
-No flag will retreive all goals. Use the -h for help when needed.`,
+	Short:   `get a list of all goals. Use the flags to specific the type of goal,`,
+	Long:    `get a list of all goals. Use the flags to specific the type of goal, as well as incomplete and complete goals. No flag will retreive all goals. Use the -h for help when needed.`,
 	Args:    cobra.ExactArgs(1),
 	Example: "get [flag] [flag] <user_id>",
 	Run: func(cmd *cobra.Command, args []string) {

@@ -18,7 +18,7 @@ var GoalFlag bool
 var DeleteCmd = &cobra.Command{
 	Use:     "delete",
 	Aliases: []string{"delete", "d"},
-	Short:   "deletes account using id",
+	Short:   "delete account or goals. Use the flags to specify",
 	Run: func(cmd *cobra.Command, args []string) {
 
 		if !GoalFlag {

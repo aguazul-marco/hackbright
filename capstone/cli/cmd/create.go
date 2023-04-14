@@ -15,8 +15,8 @@ var MonthlyFlag bool
 var CreateCmd = &cobra.Command{
 	Use:     "create",
 	Aliases: []string{"create", "c"},
-	Short: `add a goal. use the flags to specify daily, weekly or monthly goal. If no flag is use the default is daily goal. 
-Use the -h for help when needed.`,
+	Short:   `add a goal. use the flags to specify daily, weekly or monthly goal.`,
+	Long:    `add a goal. use the flags to specify daily, weekly or monthly goal. If no flag is use the default is daily goal. Use the -h for help when needed.`,
 	Example: "create [flag] <user_id> run a mile",
 	Run: func(cmd *cobra.Command, args []string) {
 
