@@ -89,7 +89,7 @@ func (c *Client) DeleteData(id, gID int64, f string) {
 	defer r.Body.Close()
 
 	if r.Status == "200 OK" {
-		fmt.Println("account has been deleted - response status : ", r.Status)
+		fmt.Println("item has been deleted - response status : ", r.Status)
 	} else {
 		fmt.Println("something went wrong - response status : ", r.Status)
 	}
@@ -122,7 +122,7 @@ func (c *Client) CreateGoal(id int64, d, f string) {
 	}
 
 	if r.Status == "200 OK" {
-		fmt.Printf("successfully created a %s - response status %s: ", f, r.Status)
+		fmt.Printf("successfully created a %s - response status %s: \n", f, r.Status)
 		fmt.Printf("User ID: %d\nGoal ID: %d\nDetail: %s\nComplete: %v\n", goal.UserID.Int32, goal.ID, goal.Discription, goal.Completed)
 	} else {
 		fmt.Println("something went wrong - response status : ", r.Status)
@@ -158,7 +158,7 @@ func (c *Client) UpdateGoals(id, gID int64, s bool, f string) {
 	}
 
 	if r.Status == "200 OK" {
-		fmt.Printf("successfully updated a %s - response status %s: \n", f, r.Status)
+		fmt.Printf("successfully updated %s - response status %s: \n", f, r.Status)
 		fmt.Printf("User ID: %d\nGoal ID: %d\nDetail: %s\nComplete: %v\n", goal.UserID.Int32, goal.ID, goal.Discription, goal.Completed)
 	} else {
 		fmt.Println("something went wrong - response status : ", r.Status)
@@ -201,7 +201,7 @@ func (c *Client) GetGoals(id int64, g, f string) {
 	}
 
 	if r.Status == "200 OK" {
-		fmt.Printf("successfully created a %s - response status %s: \n", f, r.Status)
+		fmt.Printf("successfully retrieved - response status %s: \n", r.Status)
 		fmt.Printf("User ID: %d\n", goals[0].UserID.Int32)
 		for _, goal := range goals {
 			fmt.Printf("Goal ID: %d | Detail: %s | Complete: %v\n", goal.ID, goal.Discription, goal.Completed)
