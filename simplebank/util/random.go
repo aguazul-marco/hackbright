@@ -3,14 +3,14 @@ package util
 import (
 	"math/rand"
 	"strings"
-	"time"
 )
 
 const alphabet = "abcdefghijklmnopqrstuvwxyz"
 
-func init() {
-	rand.Seed(time.Now().UnixNano())
-}
+//? I don't recall where this was used - for I'll comment it out
+// func init() {
+// 	rand.Seed(time.Now().UnixNano())
+// }
 
 // RandomInt generates a random integer between min and max
 func RandomInt(min, max int64) int64 {
@@ -36,7 +36,7 @@ func RandomOwner() string {
 }
 
 // RandomMoney generate a random amount of money
-func RandomMonery() int64 {
+func RandomMoney() int64 {
 	return RandomInt(0, 1000)
 }
 
